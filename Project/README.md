@@ -1,6 +1,6 @@
-naive_bayes.py : Naive Bayes Classification using nltk libraries
+naive_bayes.py : Naive Bayes Classification by using nltk libraries
 
-sklearn_train.py: Multinomial Naive Bayes Classification using scikit-learn libraries
+sklearn_train.py: Multinomial Naive Bayes Classification by using scikit-learn libraries
 
 NOTES: 
 
