@@ -29,6 +29,7 @@ def word_feats(words): # feature extractor
 
 featuresets = [(word_feats(words), category) for words, category in documents]# extracting features from the dataset
 
+
 # split the dataset into training and testing sets
 train_set = featuresets[:1900]
 test_set = featuresets[1900:]
@@ -54,6 +55,45 @@ features = word_feats(words)
 loaded_sentiment = classifier.classify(features)
 print("Sentiment (Loaded Model):", loaded_sentiment)
 
+def show_most_informative_features(classifier, n=10):
+        positives = []
+        negatives = []
+        pos_values = []
+        neg_values = []
+        # Determine the most relevant features, and display them.
+        cpdist = classifier._feature_probdist
+        print('Most Informative Features')
+
+        for (fname, fval) in classifier.most_informative_features(n+30):
+            def labelprob(l):
+                return cpdist[l, fname].prob(fval)
+
+            labels = sorted([l for l in classifier._labels
+                             if fval in cpdist[l, fname].samples()],
+                            key=labelprob)
+            if len(labels) == 1:
+                continue
+            l0 = labels[0]
+            l1 = labels[-1]
+            if cpdist[l0, fname].prob(fval) == 0:
+                ratio = 'INF'
+            else:
+                ratio = '%8.1f' % (cpdist[l1, fname].prob(fval) /
+                                   cpdist[l0, fname].prob(fval))
+            if l1 == "pos": 
+                positives.append(fname)
+                pos_values.append(cpdist[l1, fname].prob(fval) /
+                                   cpdist[l0, fname].prob(fval))
+            else:
+                negatives.append(fname)
+                neg_values.append(cpdist[l1, fname].prob(fval) /
+                                   cpdist[l0, fname].prob(fval))
+        for i in range(10):
+            print("\t%.4f\t%-15s\t\t%.4f\t%-15s" % ( neg_values[i], negatives[i], pos_values[i], positives[i]))
+
 # the most informative features
-classifier.show_most_informative_features(20)
+show_most_informative_features(classifier, 20)
+
+
+
 
