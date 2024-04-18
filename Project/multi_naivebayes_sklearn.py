@@ -1,6 +1,7 @@
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
+from sklearn import preprocessing
 from nltk.corpus import movie_reviews
 import numpy as np
 import matplotlib.pyplot as plt
@@ -84,7 +85,6 @@ best_classifr = MultinomialNB(alpha=best_alpha) #best classifier
 best_classifr.fit(X_train_vectorized, y_train)
 
 
-
 # an example review
 review = "This movie is fantastic! I loved every moment of it."
 example_review_vectorized = vectorizer.transform([review])
@@ -93,28 +93,17 @@ example_review_vectorized = vectorizer.transform([review])
 predicted_label = best_classifr.predict(example_review_vectorized)[0]
 print(f"Sentiment (Loaded Model): {predicted_label}")
 
-# feature log probabilities
-feature_log_probs = best_classifr.feature_log_prob_
-
-#feature names from the vectorizer
-feature_names = vectorizer.get_feature_names_out()
-
-# Print the most informative features for each class
-for i, class_name in enumerate(best_classifr.classes_):
-    print(f"\nMost informative features for class '{class_name}':")
-    sorted_indices = feature_log_probs[i].argsort()[::-1]  
-    top_features_indices = sorted_indices[:20]  #top 10 most informative features
-    top_features = [feature_names[index] for index in top_features_indices]
-    print(top_features)
-
-
 
 def show_most_informative_features(vectorizer, clf, n=20):
     feature_names = vectorizer.get_feature_names_out()
-    coefs_with_fns = sorted(zip(clf.feature_log_prob_[0], feature_names))
-    top = zip(coefs_with_fns[:n], coefs_with_fns[:-(n + 1):-1])
+    #print(feature_names)
+    clf.feature_count_[0] = preprocessing.normalize([clf.feature_count_[0]])
+    clf.feature_count_[1] = preprocessing.normalize([clf.feature_count_[1]])
+    coefs_with_fns_neg = sorted(zip(clf.feature_count_[0] , feature_names))
+    coefs_with_fns_pos = sorted(zip(clf.feature_count_[1] , feature_names))
+    top = zip(coefs_with_fns_neg[:-(n + 1):-1], coefs_with_fns_pos[:-(n + 1):-1])
     for (coef_1, fn_1), (coef_2, fn_2) in top:
-        print("\t%.4f\t%-15s\t\t%.4f\t%-15s" % (coef_1, fn_1, coef_2, fn_2))
+        print("\t%.4f\t%-15s\t\t%.4f\t%-15s" % (-coef_1, fn_1, coef_2, fn_2))
 
 show_most_informative_features(vectorizer, best_classifr, n= 10)
 
