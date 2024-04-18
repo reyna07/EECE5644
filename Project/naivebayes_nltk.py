@@ -3,6 +3,7 @@ import pickle
 from nltk.corpus import movie_reviews
 from nltk.tokenize import word_tokenize
 from nltk.classify import NaiveBayesClassifier
+from sklearn import preprocessing
 import os
 import numpy as np
 
@@ -88,7 +89,10 @@ def show_most_informative_features(classifier, n=10):
                 negatives.append(fname)
                 neg_values.append(cpdist[l1, fname].prob(fval) /
                                    cpdist[l0, fname].prob(fval))
-        for i in range(10):
+        
+        for i in range(n//2):
+            pos_values[i] = pos_values[i]/(1 + pos_values[i])
+            neg_values[i] = -neg_values[i]/(1 + neg_values[i])
             print("\t%.4f\t%-15s\t\t%.4f\t%-15s" % ( neg_values[i], negatives[i], pos_values[i], positives[i]))
 
 # the most informative features
