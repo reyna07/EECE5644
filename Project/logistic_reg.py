@@ -2,6 +2,7 @@ import nltk
 import random
 from nltk.corpus import movie_reviews
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 import os
@@ -35,15 +36,12 @@ def word_feats(words):
 # Extract features from the dataset
 featuresets = [(word_feats(words), category) for words, category in documents]
 
-# Split the dataset into training and testing sets
-train_set = featuresets[:1900]
-test_set = featuresets[1900:]
+# prepare data
+X = [' '.join(words) for words, _ in featuresets]
+y = [category for _, category in featuresets]
 
-X_train = [' '.join(words) for words, _ in train_set]
-y_train = [category for _, category in train_set]
-
-X_test = [' '.join(words) for words, _ in test_set]
-y_test = [category for _, category in test_set]
+# split data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.05, random_state=42)
 
 # Vectorize input data
 vectorizer = CountVectorizer()
