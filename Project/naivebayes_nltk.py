@@ -34,6 +34,9 @@ featuresets = [(word_feats(words), category) for words, category in documents]# 
 # split the dataset into training and testing sets
 train_set = featuresets[:1900]
 test_set = featuresets[1900:]
+print("--------------------------------------------------------------------------\n")
+print("Multinomial Naive Bayes Model(NLTK) Accuracy and Best Informative Features\n")
+print("--------------------------------------------------------------------------\n")
 
 classifier = NaiveBayesClassifier.train(train_set)
 accuracy = nltk.classify.util.accuracy(classifier, test_set)
@@ -43,19 +46,19 @@ print(f"Accuracy: {accuracy:.4f}")
 model_file = "naive_bayes_classifier.pickle"
 with open(model_file, 'wb') as f:
     pickle.dump(classifier, f)
-
+print("--------------------------------------------------------------------------\n")
 
 # example review
 review = "This movie is fantastic! I loved every moment of it."
 #review = "güzel bir filmdi."
-
+print(review)
 words = word_tokenize(review)
 features = word_feats(words)
 
 
 loaded_sentiment = classifier.classify(features)
 print("Sentiment (Loaded Model):", loaded_sentiment)
-
+print("--------------------------------------------------------------------------\n")
 def show_most_informative_features(classifier, n=10):
         positives = []
         negatives = []
@@ -99,5 +102,5 @@ def show_most_informative_features(classifier, n=10):
 show_most_informative_features(classifier, 20)
 
 
-
+print("--------------------------------------------------------------------------\n")
 

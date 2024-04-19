@@ -74,20 +74,16 @@ print("-------------------------------------------------------------------------
 print("Multinomial Naive Bayes Model(Sci-Kit) Accuracy and Best Informative Features\n")
 print("-----------------------------------------------------------------------------\n")
 
-print(f"Best alpha value: {best_alpha}")
-print(f"Maximum average accuracy: {avg_accuracy[best_alpha_index]}")
-
-plt.errorbar(alpha_values, avg_accuracy, yerr=std_deviation, fmt='-o', capsize=5) #error plot for std deviation and mean
-plt.xlabel('Alpha')
-plt.ylabel('Average Accuracy')
-plt.title('Average Accuracy as a Function of Alpha')
-plt.xscale('log')
-plt.grid(True)
-plt.show()
 
 
-best_classifr = MultinomialNB(alpha=best_alpha) #best classifier
+
+
+best_classifr = MultinomialNB() #best classifier
 best_classifr.fit(X_train_vectorized, y_train)
+accuracy = classifr.score(X_test_vectorized, y_test) #directly testing
+
+print(f"Accuracy: {accuracy}")
+
 print("-----------------------------------------------------------------------------\n")
 
 # an example review
